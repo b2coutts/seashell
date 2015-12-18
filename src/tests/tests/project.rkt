@@ -70,7 +70,7 @@ HERE
       (sync (program-wait-evt (hash-ref hsh 'pid))))
 
     (test-case "Run a Project with tests"
-      (create-directory (check-and-build-path (build-project-path "foo") "tests"))
+      (make-directory (check-and-build-path (build-project-path "foo") "tests"))
       (for ([file '("add.h" "add.c" "main.c"
                     "tests/pass.in" "tests/pass.expect"
                     "tests/fail.in" "tests/fail.expect"
@@ -84,7 +84,7 @@ HERE
       (define-values (success hsh) (compile-and-run-project "foo" "main.c" (list "a")))
       (check-true success)
       (for ([pid (hash-ref hsh 'pids)]
-            [exp-result "passed" "failed" "error"])
+            [exp-result '("passed" "failed" "error")])
         (sync (program-wait-evt pid))
         (check-equal? exp-result (third (deserialize (read (program-stdout pid)))))))
 
