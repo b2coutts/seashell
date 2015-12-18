@@ -1,6 +1,7 @@
 #lang racket
 
 (require rackunit
+         racket/serialize
          seashell/backend/project
          seashell/backend/runner
          seashell/seashell-config)
@@ -65,8 +66,8 @@ HERE
       (sync (program-wait-evt (hash-ref hsh 'pid))))
 
     (test-case "Run a Project with tests"
-      (for ([file '("add.h" "add.c" "main.c" "tests/a.in" "test/a.expect")])
-           ([contents (list test-hdr-file test-imp-file test-main-file "3\n4\n" "7\n")])
+      (for ([file '("add.h" "add.c" "main.c" "tests/a.in" "test/a.expect")]
+            [contents (list test-hdr-file test-imp-file test-main-file "3\n4\n" "7\n")])
         (with-output-to-file (check-and-build-path (build-project-path "foo") file)
           (thunk (display contents))))
       (define-values (success hsh) (compile-and-run-project "foo" "main.c" (list "a")))
